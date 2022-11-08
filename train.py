@@ -28,12 +28,7 @@ def loadDataset(path:str, labelName:str):
     return (x, y)
 
 
-airplaneX, airplaneY = loadDataset('src/train/airplane.npy','airplane')
-beeX, beeY = loadDataset('src/train/bee.npy','bee')
-bananaX, bananaY = loadDataset('src/train/banana.npy','banana')
-eiffelX, eiffelY = loadDataset('src/train/eiffel.npy','eiffel')
-bicycleX, bicycleY = loadDataset('src/train/bicycle.npy','bicycle')
-bulldozerX, bulldozerY = loadDataset('src/train/bulldozer.npy','bulldozer')
+
 
 
 def buildClassifier():
@@ -75,15 +70,36 @@ def trainClassifier(classifier, epochs:int, batch_size:int):
     for x in range(epochs):
 
         print(f'Starting Epoch: {x+1}')
-        classifier.fit(airplaneX,airplaneY,epochs=1,batch_size=batch_size)
-        classifier.fit(beeX,beeY,epochs=1,batch_size=batch_size)
-        classifier.fit(eiffelX,eiffelY,epochs=1,batch_size=batch_size)
-        classifier.fit(bulldozerX,bulldozerY,epochs=1,batch_size=batch_size)
-        classifier.fit(bananaX,bananaY,epochs=1,batch_size=batch_size)
-        classifier.fit(bicycleX,bicycleY,epochs=1,batch_size=batch_size)
+
+        # Load JIT to reduce memory usage.
+
+        print("Training on Airplane.")
+        x, y = loadDataset('src/train/airplane.npy','airplane')
+        classifier.fit(x,y,epochs=1,batch_size=batch_size)
+
+        print("Training on Bee.")
+        x, y = loadDataset('src/train/bee.npy','bee')
+        classifier.fit(x,y,epochs=1,batch_size=batch_size)
+
+        print("Training on Banana.")
+        x, y = loadDataset('src/train/banana.npy','banana')
+        classifier.fit(x,y,epochs=1,batch_size=batch_size)
+
+        print("Training on Eiffel.")
+        x, y = loadDataset('src/train/eiffel.npy','eiffel')
+        classifier.fit(x,y,epochs=1,batch_size=batch_size)
+
+        print("Training on Bicycle.")
+        x, y = loadDataset('src/train/bicycle.npy','bicycle')
+        classifier.fit(x,y,epochs=1,batch_size=batch_size)
+
+        print("Training on Bulldozer.")
+        x, y = loadDataset('src/train/bulldozer.npy','bulldozer')
+        classifier.fit(x,y,epochs=1,batch_size=batch_size)
+
 
     print("Saving model.")
     classifier.save('classifier.ai')
 
 classifier = buildClassifier()
-trainClassifier(classifier,1,256)
+trainClassifier(classifier,1,1)
