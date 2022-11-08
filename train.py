@@ -65,41 +65,81 @@ def buildClassifier():
 
 
 
-def trainClassifier(classifier, epochs:int, batch_size:int):
+def trainClassifier(classifier, epochs:int, batch_size:int, x_train:np.array, y_train:np.array):
 
     for x in range(epochs):
 
         print(f'Starting Epoch: {x+1}')
-
-        # Load JIT to reduce memory usage.
-
-        print("Training on Airplane.")
-        x, y = loadDataset('src/train/airplane.npy','airplane')
-        classifier.fit(x,y,epochs=1,batch_size=batch_size)
-
-        print("Training on Bee.")
-        x, y = loadDataset('src/train/bee.npy','bee')
-        classifier.fit(x,y,epochs=1,batch_size=batch_size)
-
-        print("Training on Banana.")
-        x, y = loadDataset('src/train/banana.npy','banana')
-        classifier.fit(x,y,epochs=1,batch_size=batch_size)
-
-        print("Training on Eiffel.")
-        x, y = loadDataset('src/train/eiffel.npy','eiffel')
-        classifier.fit(x,y,epochs=1,batch_size=batch_size)
-
-        print("Training on Bicycle.")
-        x, y = loadDataset('src/train/bicycle.npy','bicycle')
-        classifier.fit(x,y,epochs=1,batch_size=batch_size)
-
-        print("Training on Bulldozer.")
-        x, y = loadDataset('src/train/bulldozer.npy','bulldozer')
-        classifier.fit(x,y,epochs=1,batch_size=batch_size)
+        classifier.fit(x_train,y_train)
+        
 
 
     print("Saving model.")
     classifier.save('classifier.ai')
 
+
+airplaneX, airplaneY = loadDataset('src/train/airplane.npy','airplane')
+beeX, beeY = loadDataset('src/train/bee.npy','bee')
+bananaX, bananaY = loadDataset('src/train/banana.npy','banana')
+eiffelX, eiffelY = loadDataset('src/train/eiffel.npy','eiffel')
+bicycleX, bicycleY = loadDataset('src/train/bicycle.npy','bicycle')
+bulldozerX, bulldozerY = loadDataset('src/train/bulldozer.npy','bulldozer')
+
+def spliceData():
+
+    x = []
+    y = []
+
+    exhausted = False
+
+    i = 0
+    
+    while not exhausted:
+
+        if i < len(airplaneX):
+
+            x.append(airplaneX[i])
+            y.append(airplaneY[i])
+            i+=1
+
+        if i < len(beeX):
+
+            x.append(beeX[i])
+            y.append(beeY[i])
+            i+=1            
+
+        if i < len(bananaX):
+
+            x.append(bananaX[i])
+            y.append(bananaY[i])
+            i+=1
+
+        if i < len(bulldozerX):
+
+            x.append(bulldozerX[i])
+            y.append(bulldozerY[i])
+            i+=1
+
+        if i < len(eiffelX):
+
+            x.append(eiffelX[i])
+            y.append(eiffelY[i])
+            i+=1
+
+
+        if i < len(bicycleX):
+
+            x.append(bicycleX[i])
+            y.append(bicycleY[i])
+            i+=1
+
+        
+        if i >= len(airplaneX) and i >= len(beeX) and i >= len(bicycleX) and i >= len(bulldozerX) and i >= len(eiffelX) and i >= len(bananaX):
+            exhausted = True
+
+    return (np.array(x),np.array(y))
+
+
+x,y = spliceData()
 classifier = buildClassifier()
-trainClassifier(classifier,1,1)
+trainClassifier(classifier,5,5,x,y)
