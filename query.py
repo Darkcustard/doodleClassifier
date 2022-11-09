@@ -2,6 +2,7 @@ import pymenu
 import pygame
 import numpy
 
+from math import sqrt
 from keras import models
 
 win = pygame.display.set_mode((500,500))
@@ -136,9 +137,32 @@ for y in range(28):
                 "color":(0,0,0),
                 "size":(10,10),
                 "parent": drawspace_panel,
+                "round_radius" : 0,
             }))
 
     pixels.append(row)
+
+
+
+
+
+#endregion
+
+
+def handleDrawing(pixels):
+
+    radius = 6
+    x, y = pygame.mouse.get_pos()
+
+    for row in pixels:
+        for pixel in row:
+
+            center = (pixel.pos[0]+pixel.size[0]/2,pixel.pos[1]+pixel.size[1]/2)
+            distance = sqrt((center[0]-x)**2+(center[1]-y)**2)
+
+            if distance < radius:
+
+                pixel.color = (255,255,255)
 
 
 
@@ -156,13 +180,11 @@ while run:
 
     #checking if mouse clicked
     left, _, _ = pygame.mouse.get_pressed()
-    if left:
+    
         
-        for row in pixels:
-            for pixel in row:
-                if pixel.checkHover():
-                    pixel.color = (255,255,255)
+    
 
     background.draw()
-
+    if left:
+        handleDrawing(pixels)
     pygame.display.update()
