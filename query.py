@@ -2,12 +2,16 @@ import pymenu
 import pygame
 import numpy
 
+from random import choice
 from math import sqrt
 from keras import models
+
 
 win = pygame.display.set_mode((500,500))
 pixels = []
 classifier = models.load_model('classifier.ai')
+
+prompts = ["Airplane","Bee","Banana","Eiffel Tower","Bicycle","Bulldozer"]
 
 
 #region general ui
@@ -17,6 +21,8 @@ background = pymenu.Panel(win,
         "size": (500,500),
         "color": (130,168,200),
     })
+
+
 
 foreground = pymenu.Panel(win,
     {
@@ -28,11 +34,46 @@ foreground = pymenu.Panel(win,
         "outline_size": 1,
     })
 
+
+prompt = pymenu.Panel(win,
+    {
+        "pos" : (70,110),
+        "color" : (255,255,255),
+        "size" : (250,30),
+        "text" : choice(prompts),
+        "text_pos" : (10,5),
+        "text_size" : 30,
+
+        "parent" : foreground,
+    })
+
+
+guess = pymenu.Panel(win,
+    {
+        "pos" : (70,450),
+        "color" : (255,255,255),
+        "size" : (250,30),
+        "text" : "",
+        "text_pos" : (10,5),
+        "text_size" : 30,
+
+        "parent" : foreground,
+
+
+    })
+
 def clearScreen():
     
     for row in pixels:
         for pixel in row:
             pixel.color = (0,0,0)
+
+
+    prompt.text = choice(prompts)
+    prompt.compile()
+
+    guess.text = ''
+    guess.compile()
 
 button_clear = pymenu.Button(win,
     {
@@ -55,13 +96,13 @@ def queryAi():
 
 
 
+
     #format pixels (panels) into 'mnist-like' image
     image_raw = []
     for y in pixels:
         row = []
         for x in y:
             row.append((sum(x.color)/3))
-            print(row)
         image_raw.append(row)
     
     image = numpy.array(image_raw)
@@ -90,6 +131,8 @@ def queryAi():
     if output.index(max(output)) == 5:
         description = 'bulldozer'
 
+    guess.text = 'I think its a '+description
+    guess.compile()
 
     print(description)
     
@@ -161,7 +204,6 @@ def handleDrawing(pixels):
             distance = sqrt((center[0]-x)**2+(center[1]-y)**2)
 
             if distance < radius:
-
                 pixel.color = (255,255,255)
 
 
